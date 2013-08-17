@@ -23,7 +23,7 @@ class TaipeiBus:
 	def fetchBusRoute(self, bus_name):
 		bus_new_url = self.bus_url + bus_name
 		bus_info = {"name":bus_name,"forward":[],"backward":[]}
-		bus_stop = []
+		bus_stop_list = []
 		req = urllib2.Request(bus_new_url)
 		f = urllib2.urlopen(req,timeout=2)
 		bus_index = f.read()
@@ -31,22 +31,19 @@ class TaipeiBus:
 		table = soup.find_all("table")
 		for bus_stop in table[2].find_all("tr"):
 			td_data = bus_stop.find_all("td")
-			bus_info["forward"].append((td_data[0].string,td_data[0].a['href']))
-			bus_stop.append((td_data[0].string,bus_name))
+			bus_info["forward"].append({"stop":td_data[0].string,"url":td_data[0].a['href']})
+			bus_stop_list.append(td_data[0].string)
 		for bus_stop in table[3].find_all("tr"):
 			td_data = bus_stop.find_all("td")
-			bus_info["backward"].append((td_data[0].string,td_data[0].a['href']))
-		return bus_info, bus_stop
+			bus_info["backward"].append({"stop":td_data[0].string,"url":td_data[0].a['href']})
+		return bus_info, bus_stop_list
 	
-	def generateBusStop(self, bus_stop_list):
-		bus_stop = {}
-		for each_bus in bus_stop_list:
-			for each_stop in each_bus:
-				if(bus_stop[each_stop[0]] in bus_stop):
-					bus_stop[each_stop[0]].append(each_stop[1])
-				else:
+	def generateBusStop(self, bus_stop_list,bus_stop={}):
+		for each_stop in bus_stop_list:
+			if(bus_stop[each_stop[0]] not in bus_stop):
 					bus_stop[each_stop[0]] = []
-					bus_stop[each_stop[0]].append(each_stop[1])
+			else:
+				bus_stop[each_stop[0]].append(each_stop[1])
 		
 		return bus_stop
 			
