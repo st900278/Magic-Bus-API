@@ -41,9 +41,8 @@ class TaipeiBus:
 	def generateBusStop(self, bus_stop_list,bus_stop={}):
 		for each_stop in bus_stop_list:
 			if(bus_stop[each_stop[0]] not in bus_stop):
-					bus_stop[each_stop[0]] = []
-			else:
-				bus_stop[each_stop[0]].append(each_stop[1])
+				bus_stop[each_stop[0]] = []
+			bus_stop[each_stop[0]].append(each_stop[1])
 		
 		return bus_stop
 			
